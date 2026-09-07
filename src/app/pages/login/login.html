@@ -1,28 +1,33 @@
-<div class="fondo">
-
-  <div class="login-card">
-
-    <h1>SI</h1>
-    <h2>Sistema Inventario</h2>
-
-    <input
-      type="text"
-      placeholder="Usuario"
-      [(ngModel)]="usuario">
-
-    <input
-      type="password"
-      placeholder="Contraseña"
-      [(ngModel)]="clave">
-
-    <button (click)="ingresar()">
-      Ingresar
-    </button>
-
-    <p class="demo">
-      Demo: admin / 1234
-    </p>
-
-  </div>
-
-</div>
+<main class="login-shell">
+  <div class="orb orb-one" aria-hidden="true"></div>
+  <div class="orb orb-two" aria-hidden="true"></div>
+  <section class="login-card" aria-labelledby="login-title">
+    <div class="brand">
+      <span class="brand-mark">SI</span>
+      <div><p class="eyebrow">PLATAFORMA INTELIGENTE</p><h1 id="login-title">Inventario</h1></div>
+    </div>
+    <div class="heading"><h2>Bienvenido de nuevo</h2><p>Accede a tu centro de control.</p></div>
+    <form (ngSubmit)="ingresar()" #loginForm="ngForm">
+      @if (error) { <p class="form-error" role="alert">{{ error }}</p> }
+      <label for="usuario">Usuario</label>
+      <div class="input-wrap"><span class="input-icon" aria-hidden="true">⌁</span><input id="usuario" name="usuario" type="text" placeholder="Ingresa tu usuario" [(ngModel)]="usuario" required autocomplete="username"></div>
+      <div class="password-heading"><label for="clave">Contraseña</label><button class="link-button" type="button" (click)="abrirRecuperacion()">¿La olvidaste?</button></div>
+      <div class="input-wrap"><span class="input-icon" aria-hidden="true">◈</span><input id="clave" name="clave" [type]="mostrarClave ? 'text' : 'password'" placeholder="Ingresa tu contraseña" [(ngModel)]="clave" required autocomplete="current-password"><button class="visibility" type="button" (click)="mostrarClave = !mostrarClave" [attr.aria-label]="mostrarClave ? 'Ocultar contraseña' : 'Mostrar contraseña'">{{ mostrarClave ? 'Ocultar' : 'Ver' }}</button></div>
+      <button class="primary-button" type="submit" [disabled]="loginForm.invalid"><span>Ingresar al sistema</span><span aria-hidden="true">→</span></button>
+    </form>
+    <p class="demo"><span>ACCESO DE DEMOSTRACIÓN</span> admin / 1234</p>
+  </section>
+  @if (mostrarRecuperacion) {
+    <div class="modal-backdrop" (click)="cerrarRecuperacion()">
+      <section class="recovery-card" role="dialog" aria-modal="true" aria-labelledby="recovery-title" (click)="$event.stopPropagation()">
+        <button class="close-button" type="button" (click)="cerrarRecuperacion()" aria-label="Cerrar recuperación">×</button><span class="recovery-icon" aria-hidden="true">✦</span><h2 id="recovery-title">Recupera tu acceso</h2>
+        @if (!recuperacionEnviada) {
+          <p>Escribe tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+          <form (ngSubmit)="enviarRecuperacion()" #recoveryForm="ngForm"><label for="correo">Correo electrónico</label><input id="correo" name="correo" type="email" placeholder="nombre@empresa.com" [(ngModel)]="correoRecuperacion" required email autocomplete="email"><button class="primary-button" type="submit" [disabled]="recoveryForm.invalid">Enviar enlace</button></form>
+        } @else {
+          <p class="success-message">Si existe una cuenta asociada a <strong>{{ correoRecuperacion }}</strong>, recibirás las instrucciones para recuperar el acceso.</p><button class="primary-button" type="button" (click)="cerrarRecuperacion()">Volver al inicio de sesión</button>
+        }
+      </section>
+    </div>
+  }
+</main>
